@@ -26,11 +26,37 @@
 			body { margin: 0; }
 			canvas { width: 640px; height: 360px }
 			ul {position: absolute; width: 100%; text-align: left; padding: inherit; pointer-events: none;}
-			li {font-size: 2px; position: absolute; visibility: visible; color: white; font-family: "Migra", serif; list-style: none;}
+			li {font-size: 10px;
+    background: black; font-family: "Charlevoix Pro", sans-serif; text-transform: uppercase;
+    position: absolute;  position: absolute; visibility: visible; color: white;  list-style: none;}
+	li{
+		font-size: 16px;
+    background: black;
+    font-family: "Charlevoix Pro", sans-serif;
+    text-transform: uppercase;
+    position: absolute;
+    position: absolute;
+    letter-spacing: 1px;
+    visibility: visible;
+    opacity: 0.7;
+    color: white;
+    list-style: none;
+	}
+	
 		</style>
 	</head>
 	<body>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r120/three.min.js" integrity="sha512-kgjZw3xjgSUDy9lTU085y+UCVPz3lhxAtdOVkcO4O2dKl2VSBcNsQ9uMg/sXIM4SoOmCiYfyFO/n1/3GSXZtSg==" crossorigin="anonymous"></script>		<script type="module" src="assets/MathUtils.js"></script>
+		<script src="assets/CopyShader.js"></script>
+		<script src="assets/EffectComposer.js"></script>
+		<script src="assets/ShaderPass.js"></script>
+
+		<script src="assets/RenderPass.js"></script>
+		<script src="assets/AfterImageShader.js"></script>
+
+		<script src="assets/AfterImagePass.js"></script>
+		<script src="assets/HalftoneShader.js"></script>
+		<script src="assets/HalftonePass.js"></script>
 		<script src="assets/OrbitControls.js"></script>
 		<script type="module" src="/scripts.js"></script>
 	</body>
