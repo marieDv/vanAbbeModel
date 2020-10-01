@@ -7,16 +7,56 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHei
 var width = window.innerWidth;
 var height = window.innerHeight;
 var shaderMaterial = null;
+var shaderMaterialSmall = null;
 let start = Date.now();
-var renderer = new THREE.WebGLRenderer();
-renderer.setPixelRatio(window.devicePixelRatio * 1);
+var renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true});
+renderer.setPixelRatio(window.devicePixelRatio * 2);
 
-let fog = new THREE.Fog(0xff0000, 1, 300);
+// scene.fog = new THREE.Fog(0xff0000, 1, 2.0);
 // var composer = new THREE.EffectComposer(renderer);
 // composer.addPass(new THREE.RenderPass(scene, camera));
 // composer.setPixelRatio(window.devicePixelRatio * 6);
 // var afterimagePass = new THREE.AfterimagePass(1);
 // composer.addPass(afterimagePass);
+
+
+
+
+// var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+// 			bloomPass.threshold = 1.0;
+// 			bloomPass.strength = 2.0;
+// 			bloomPass.radius = 2.0;
+
+// 			var bloomComposer = new THREE.EffectComposer( renderer );
+// 			bloomComposer.renderToScreen = false;
+// 			bloomComposer.addPass( scene );
+// 			bloomComposer.addPass( bloomPass );
+// 			var composer = new EffectComposer( renderer );
+// 			composer.addPass( scene );
+
+
+function saveCanvas() {
+  let canvas = document.querySelector('canvas');
+  let link = document.createElement('a');
+  let timestamp = new Date().toISOString();
+  link.download = timestamp + '.png';
+  link.href = canvas.toDataURL();
+  link.style.display = 'none';     // Firefox
+  document.body.appendChild(link); // Firefox
+  link.click();
+  document.body.removeChild(link); // Firefox
+}
+document.addEventListener('keydown', e => {
+  // console.log(e.key, e.keyCode, e);
+  if (e.key == 's') { // s .. save frame
+    saveCanvas();
+  }
+});
+
+
+
+
+
 
 let params = {
 	shape: 2,
@@ -45,11 +85,33 @@ document.body.appendChild(renderer.domElement);
 //BREDA 76.9,3.0,1.6,1.7,3.1,1.1,1.7,0.1,1.1,2.8,0.8,0.6,1.3,0.4,0.4,0.6,0.6,2.3
 //EINDHOVEN 66.5, 2.7, 1.1, 4.6, 2.7, 1.5, 2.4, 0.2, 2.1, 4.1, 1.4, 0.9, 1.8, 1.6, 1.0, 0.7, 1.9, 2.8
 //HELMOND 74.6,2.4,0.8,2.7,4.3,0.9,2.2,0.1,1.3,5.3,0.7,0.5,1.1,0.1,0.4,0.9,0.5,1.5
-var array = [66.5, 2.7, 1.1, 4.6, 2.7, 1.5, 2.4, 0.2, 2.1, 4.1, 1.4, 0.9, 1.8, 1.6, 1.0, 0.7, 1.9, 2.8
+
+//DEN HAAG
+//47.3, 3.4, 0.6, 7.5, 5.9, 2.2, 2.2, 0.3, 2.7, 6.3, 2.0, 1.6, 2.3, 1.5, 0.8, 0.7, 1.5, 11.3
+
+//TILBURG
+//73.8,2.2,1.2,3.7,2.8,0.8,1.5,0.1,1.0,3.8,1.1,0.6,1.9,0.2,0.5,0.4,0.7,3.8,
+
+//BREDA
+//76.9,3.0,1.6,1.7,3.1,1.1,1.7,0.1,1.1,2.8,0.8,0.6,1.3,0.4,0.4,0.6,0.6,2.3
+
+
+//BEN BOSCH
+//80.1,2.6,0.7,1.8,3.2,0.9,1.7,0.1,0.9,2.1,1.0,0.5,0.9,0.2,0.6,0.5,0.5,1.9,
+
+
+//HELMOND
+
+//74.6,2.4,0.8,2.7,4.3,0.9,2.2,0.1,1.3,5.3,0.7,0.5,1.1,0.1,0.4,0.9,0.5,1.5
+
+
+
+
+var array = [73.8,2.2,1.2,3.7,2.8,0.8,1.5,0.1,1.0,3.8,1.1,0.6,1.9,0.2,0.5,0.4,0.7,3.8
 
 
 ];
-var colors = [0x000000, 0xff00ff, 0xff00ff, 0xff0000, 0xff00ff, 0xff00ff, 0xff0000, 0xff00ff, 0xff00ff, 0xff0000, 0xff00ff, 0xff00ff, 0xff0000, 0xff00ff, 0xff00ff, 0xff0000, 0xff00ff, 0xff00ff];
+var colors = [0x000000, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a];
 
 let ambient = new THREE.AmbientLight(0xffffff, 1.0);
 var pointLight = new THREE.PointLight(0xffffff, 90, 300);
@@ -58,7 +120,7 @@ scene.add(pointLight);
 
 var sphereSize = 1;
 var pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
-scene.add(pointLightHelper);
+// scene.add(pointLightHelper);
 
 let density = 1;
 let volume = array[0];
@@ -68,7 +130,7 @@ let sinFac = 1;
 for (let i = 0; i < array.length; i++) {
 	volume = array[i];
 
-	posX = ((Math.sin(i / 3) * sinFac) * 5.5) - 2;//80   
+	posX = ((Math.sin(i / 3) * sinFac) * 10.5) - 2;//80   
 	posZ = (Math.sin(i / 1) * sinFac) * 10;//80   
 	createSpheres(posX, posZ, i, volume, colors[i], i);
 
@@ -113,27 +175,20 @@ function mapTextLabels() {
 	}
 }
 function createSpheres(x, z, y, volume, color, current) {
-	var vertices = [];
-	// var geometry = new THREE.SphereBufferGeometry(volume, volume, volume);
+
 	var geometry = new THREE.Geometry();
 	geometry.verticesNeedUpdate = true;
-	// for (var i = 0; i < 90000; i++) {
-	// 	const v = new THREE.Vector3();
-	// const tx = THREE.MathUtils.randFloatSpread( -1, 1 )*volume;
-	// 	const ty = THREE.MathUtils.randFloatSpread( -1, 1 )*volume;
-	// 	const tz = THREE.MathUtils.randFloatSpread( -1, 1 )*volume;
-	// 	const normalizationFactor = 1 / Math.sqrt( x * x + y * y + z * z );
 
-	// 	v.x = tx * normalizationFactor * volume;
-	// 	v.y = ty * normalizationFactor * volume;
-	// 	v.z = tz * normalizationFactor * volume;
+	var geometrySmall = new THREE.Geometry();
+	geometrySmall.verticesNeedUpdate = true;
 
-	// 	vertices.push(tx, ty, tz);
-	// }
 	var spherical = new THREE.Spherical();
 
 	if (current === 0) {
-		for (let i = 0; i < volume * 900; i++) {
+		for (let i = 0; i < volume * 20; i++) {
+			geometrySmall.vertices.push(setRandomPointInBigSphere(volume, i));// 10 is the desired radius
+		}
+		for (let i = 0; i < volume * 100; i++) {
 			geometry.vertices.push(setRandomPointInBigSphere(volume, i));// 10 is the desired radius
 		}
 	} else {
@@ -147,12 +202,8 @@ function createSpheres(x, z, y, volume, color, current) {
 
 		var v = new THREE.Vector3(
 			Math.cos(posX),
-			// Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume  * 5.0 + Math.sin(i * 5),
 			Math.cos(THREE.MathUtils.randFloatSpread(-2, 10)) * volume * 20.0 * Math.sin(i * 5),
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin((5)*2,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin(5)*2,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin(5)*2
 		);
 		if (v.length() > radius) {
 			return setRandomPointInSphere(radius);
@@ -165,9 +216,6 @@ function createSpheres(x, z, y, volume, color, current) {
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin((5)*2,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin(5)*2,
-			// THREE.Math.randFloatSpread(radius * 2) * Math.sin(5)*2
 		);
 		if (v.length() > radius) {
 			return setRandomPointInSphere(radius);
@@ -192,18 +240,9 @@ function createSpheres(x, z, y, volume, color, current) {
 	}
 
 
-	var test = new THREE.SphereBufferGeometry(100, 160, 80);
-console.log(test)
-
-		// test.setAttribute(
-		// 	'position',
-		// 	new THREE.BufferAttribute(new Float32Array(allVerticePositions), 3));		
-
-
-
-
-
-
+	var test = new THREE.SphereBufferGeometry(2*volume, 160, 110);
+	var testSmall = new THREE.SphereBufferGeometry(150, 90, 90);
+	var testVol = new THREE.SphereBufferGeometry(2*volume, volume*5.0, volume*5.0);
 
 
 
@@ -221,18 +260,78 @@ console.log(test)
 					type: "f",
 					value: 1.0,
 				},
-				// blending: THREE.AdditiveBlending,
-				// depthTest: false,
-				// transparent: true,
+				random: {
+					type: "f",
+					value: 1.0
+				},
+				distortion: {
+					type: "f",
+					value: 2.1,
+				},
+				pointSize: {
+					type: "f",
+					value: 2.6,
+				},
+				blending: THREE.AdditiveBlending,
 			}
 		});
+
+		shaderMaterialSmall = new THREE.ShaderMaterial({
+			vertexShader: document.getElementById('vertexShaderrr').textContent,
+			fragmentShader: document.getElementById('fragmentshaderrr').textContent,
+			uniforms: {
+				time: {
+					type: "f",
+					value: 1.0,
+				},
+				random: {
+					type: "f",
+					value: 1.0
+				},
+				distortion: {
+					type: "f",
+					value: 100.0,
+				},
+				pointSize: {
+					type: "f",
+					value: 2.1,
+				},
+				blending: THREE.AdditiveBlending,
+			}
+		});
+
+		
 		cube = new THREE.Points(test, shaderMaterial);
+		cube.rotation.x = 1.5;
 		cube.geometry.attributes.position.needsUpdate = true;
 
 		filling = new THREE.Points(geometry, fillmat);
 	} else {
-		var material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2, transparent: true, opacity: 0.5 });
-		cube = new THREE.Points(geometry, material);
+		let testShaderMat = new THREE.ShaderMaterial({
+			vertexShader: document.getElementById('vertexShaderrr').textContent,
+			fragmentShader: document.getElementById('fragmentshaderrr').textContent,
+			uniforms: {
+				time: {
+					type: "f",
+					value: 1.0,
+				},
+				random: {
+					type: "f",
+					value: 1.0
+				},
+				distortion: {
+					type: "f",
+					value: 3.0,
+				},
+				pointSize: {
+					type: "f",
+					value: 2.7,
+				},
+				blending: THREE.AdditiveBlending,
+			}
+		});
+		var material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true, opacity: 0.9 });
+		cube = new THREE.Points(testVol, testShaderMat);
 	}
 
 console.log(cube.geometry)
@@ -242,23 +341,31 @@ console.log(cube.geometry)
 
 	let materialShadow = new THREE.MeshToonMaterial({
 		transparent: true,
-		opacity: 0.5, color: 0xffffff,
+		opacity: 0.1, color: 0xffe55a,
 		wireframe: true,
-
-		// map: new THREE.TextureLoader().load("./assets/0 73.8 200919_231313_0001.png"),
-		// bumpMap: new THREE.TextureLoader().load("./assets/0 73.8 200919_231313_0001.png")
 	});
-	// let cube = new THREE.Points(geometry, material);
 	let cubeShadow = new THREE.Mesh(geometryShadow, materialShadow);
 
 	cube.position.z = -50 + z;
-	cube.position.x = x;
-	cube.position.y = y;
+	cube.position.x = x*2.0;
+	cube.position.y = y*3.5;
 	cubeShadow.position.z = -50 + z;
-	cubeShadow.position.x = x;
-	cubeShadow.position.y = y;
+	cubeShadow.position.x = x*2.0;
+	cubeShadow.position.y = y*3.5;
+
+if(current === 0){
+	let cubeCopy = new THREE.Points(testSmall, shaderMaterialSmall);
+	cubeCopy.scale.x = 0.80;
+	cubeCopy.scale.y = 0.80;
+	cubeCopy.scale.z = 0.80;
+
+	cubeCopy.position.x = x;
+	cubeCopy.position.y = y;
+	cubeCopy.position.z = -50 + z;
+	shadowGroup.add(cubeCopy);
+}
 	group.add(cube);
-	group.add(filling);
+	// group.add(filling);
 	if (current !== 0) {
 		shadowGroup.add(cubeShadow);
 	}
@@ -266,6 +373,10 @@ console.log(cube.geometry)
 var animate = function () {
 	requestAnimationFrame(animate);
 	shaderMaterial.uniforms['time'].value = .00025 * (Date.now() - start);
+	shaderMaterialSmall.uniforms['time'].value = .00025 * (Date.now() - start);
+	shaderMaterial.uniforms['random'].value = (Math.random() * 10-1) + 1;
+	shaderMaterialSmall.uniforms['random'].value = (Math.random() * 10-1) + 1;
+	
 	// console.log(shaderMaterial.uniforms['time'])
 	// group.rotation.y += 0.005;
 	// shadowGroup.rotation.y += 0.005;
