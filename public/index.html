@@ -3,7 +3,7 @@
 <head>
 	<title>Three.js Boilerplate</title>
 	<ul class="labels">
-		<!-- <li></li>
+		<li></li>
 		<li>Indonesia</li>
 		<li>Belgium</li>
 		<li>Turkey</li>
@@ -20,9 +20,9 @@
 		<li>Central Asia</li>
 		<li>Southeast Asia and the Pacific</li>
 		<li>East Asia</li>
-		<li>Former West Indian colonies</li> -->
+		<li>Former West Indian colonies</li>
 
-		<li>01</li>
+		<!-- <li>01</li>
 		<li>02</li>
 		<li>03</li>
 		<li>04</li>
@@ -39,9 +39,16 @@
 		<li>15</li>
 		<li>16</li>
 		<li>17</li>
-		<li>18</li>
+		<li>18</li> -->
 
 	</ul>
+	<div id="switch">
+		<button id="switchEindhoven">Eindhoven</button>
+		<button id="switchTillburg">Tillburg</button>
+		<button id="switchBreda">Breda</button>
+		<button id="switchDenBosch">Den Bosch</button>
+		<button id="switchHelmond">Helmond</button>
+	</div>
 	<style>
 		body {
 			margin: 0;
@@ -72,23 +79,49 @@
 			list-style: none;
 		}
 
+		#switch {
+			position: absolute;
+			top: 12px;
+			left: 12px;
+		}
+
+		button {
+			background: transparent;
+			border: 1px solid white;
+			color: #ffffff;
+			border-radius: 99px;
+			font-family: "Agrandir", sans-serif;
+			padding-top: 3px;
+			font-size: 12px;
+			cursor: pointer;
+		}
+		button:focus {outline:0;}
+		button:hover {
+			background: #ffffff;
+			color: #000000;
+		}
+
+		.active {
+			background: #ffffff;
+			color: #000000;
+		}
 		li {
 			font-size: 8px;
-    margin-top: -19px;
-    left: 7px;
-		/* transform: rotate(-90deg) translateX(3px) translateY(13px); */
-		transform: rotate(-90deg) translateX(3px) translateY(13px) scale(-1, -1);
-    background: black;
-    font-family: "Agrandir", sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    position: absolute;
-    position: absolute;
-    letter-spacing: 1px;
-    visibility: visible;
-    opacity: 0.7;
-    color: white;
-    list-style: none;
+			margin-top: -19px;
+			left: 7px;
+
+			/* transform: rotate(-90deg) translateX(3px) translateY(13px) scale(-1, -1); */
+			/* background: black; */
+			font-family: "Agrandir", sans-serif;
+			font-weight: 900;
+			text-transform: uppercase;
+			position: absolute;
+			position: absolute;
+			letter-spacing: 1px;
+			visibility: visible;
+			opacity: 0.7;
+			color: white;
+			list-style: none;
 		}
 	</style>
 </head>
@@ -96,25 +129,21 @@
 <body>
 
 
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r120/three.min.js"
 		integrity="sha512-kgjZw3xjgSUDy9lTU085y+UCVPz3lhxAtdOVkcO4O2dKl2VSBcNsQ9uMg/sXIM4SoOmCiYfyFO/n1/3GSXZtSg=="
 		crossorigin="anonymous"></script>
-	<script type="module" src="assets/MathUtils.js"></script>
-	<script src="assets/EffectComposer.js"></script>
+	<!-- <script type="module" src="assets/MathUtils.js"></script> -->
+	<!-- <script src="assets/EffectComposer.js"></script>
 	<script src="assets/CopyShader.js"></script>
 	<script src="assets/ShaderPass.js"></script>
 
 	<script src="assets/RenderPass.js"></script>
 	<script src="assets/HighPassShader.js"></script>
-	<script src="assets/UnrealBloomPass.js"></script>
-	<!-- <script src="assets/AfterImageShader.js"></script> -->
+	<script src="assets/UnrealBloomPass.js"></script> -->
 
-	<!-- <script src="assets/AfterImagePass.js"></script> -->
-	<!-- <script src="assets/HalftoneShader.js"></script> -->
-	<!-- <script src="assets/HalftonePass.js"></script> -->
 	<script src="assets/OrbitControls.js"></script>
-	<script type="module" src="/scriptline.js"></script>
+	<script type="text/javascript" src="scripts.js"></script>
 
 
 

@@ -1,7 +1,3 @@
-// import * as THREE from 'three';
-// import { MathUtils } from './assets/MathUtils.js';
-// import { OrbitControls } from './assets/OrbitControls.js';
-
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 var width = window.innerWidth;
@@ -9,48 +5,94 @@ var height = window.innerHeight;
 var shaderMaterial = null;
 var shaderMaterialSmall = null;
 let start = Date.now();
-var renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true});
-renderer.setPixelRatio(window.devicePixelRatio * 2);
-
-// scene.fog = new THREE.Fog(0xff0000, 1, 2.0);
-// var composer = new THREE.EffectComposer(renderer);
-// composer.addPass(new THREE.RenderPass(scene, camera));
-// composer.setPixelRatio(window.devicePixelRatio * 6);
-// var afterimagePass = new THREE.AfterimagePass(1);
-// composer.addPass(afterimagePass);
-
-
-
-
-// var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-// 			bloomPass.threshold = 1.0;
-// 			bloomPass.strength = 2.0;
-// 			bloomPass.radius = 2.0;
-
-// 			var bloomComposer = new THREE.EffectComposer( renderer );
-// 			bloomComposer.renderToScreen = false;
-// 			bloomComposer.addPass( scene );
-// 			bloomComposer.addPass( bloomPass );
-// 			var composer = new EffectComposer( renderer );
-// 			composer.addPass( scene );
+var currentCity = "Eindhoven";
+let posX = Math.sin((Math.random() * 10) + 1) * Math.PI * Math.PI;
+let posZ = 0;
+let sinFac = 1;
+var array = [66.5, 2.7, 1.1, 4.6, 2.7, 1.5, 2.4, 0.2, 2.1, 4.1, 1.4, 0.9, 1.8, 1.6, 1.0, 0.7, 1.9, 2.8];
+let volume = array[0];
+var group = new THREE.Object3D();
+var shadowGroup = new THREE.Object3D();
+let firstLoad = true;
+var renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 
 function saveCanvas() {
-  let canvas = document.querySelector('canvas');
-  let link = document.createElement('a');
-  let timestamp = new Date().toISOString();
-  link.download = timestamp + '.png';
-  link.href = canvas.toDataURL();
-  link.style.display = 'none';     // Firefox
-  document.body.appendChild(link); // Firefox
-  link.click();
-  document.body.removeChild(link); // Firefox
+	let canvas = document.querySelector('canvas');
+	let link = document.createElement('a');
+	let timestamp = new Date().toISOString();
+	link.download = timestamp + '.png';
+	link.href = canvas.toDataURL();
+	link.style.display = 'none';     // Firefox
+	document.body.appendChild(link); // Firefox
+	link.click();
+	document.body.removeChild(link); // Firefox
 }
+
 document.addEventListener('keydown', e => {
-  // console.log(e.key, e.keyCode, e);
-  if (e.key == 's') { // s .. save frame
-    saveCanvas();
-  }
+	if (e.key == 's') { // s .. save frame
+		saveCanvas();
+	}
+});
+
+function removeActive(){
+	let switchList = document.getElementById("switch");
+for(let i=0; i<switchList.children.length; i++){
+	console.log("child")
+	switchList.children[i].classList.remove("active");
+	console.log(switchList.children[i].classList)
+}
+}
+window.addEventListener('load', (event) => {
+	// let tillburg = document.getElementById("switschTillburg")
+
+	document.getElementById("switchTillburg").addEventListener('click', e => {
+		removeActive();
+		group.children = [];
+		shadowGroup.children = [];
+		init("Tillburg");
+		document.getElementById("switchTillburg").classList.add("active");
+	});
+	document.getElementById("switchEindhoven").addEventListener('click', e => {
+		removeActive();
+		group.children = [];
+		shadowGroup.children = [];
+		init("Eindhoven");
+		document.getElementById("switchEindhoven").classList.add("active");
+	});
+	document.getElementById("switchBreda").addEventListener('click', e => {
+		removeActive();
+		group.children = [];
+		shadowGroup.children = [];
+		init("Breda");
+		document.getElementById("switchBreda").classList.add("active");
+	});
+	document.getElementById("switchDenBosch").addEventListener('click', e => {
+		removeActive();
+		group.children = [];
+		shadowGroup.children = [];
+		init("DenBosch");
+		document.getElementById("switchDenBosch").classList.add("active");
+	});
+	document.getElementById("switchHelmond").addEventListener('click', e => {
+		removeActive();
+		group.children = [];
+		shadowGroup.children = [];
+		init("Helmond");
+		document.getElementById("switchHelmond").classList.add("active");
+	});
+
+	
+
+
+	if (firstLoad) {
+		init("Eindhoven");
+		animate();
+		firstLoad = false;
+	}
+
 });
 
 
@@ -58,98 +100,75 @@ document.addEventListener('keydown', e => {
 
 
 
-let params = {
-	shape: 2,
-	radius: 4,
-	rotateR: Math.PI / 12,
-	rotateB: Math.PI / 12 * 2,
-	rotateG: Math.PI / 12 * 3,
-	scatter: 0,
-	blending: 1,
-	blendingMode: 4,
-	greyscale: false,
-	disable: false
-};
-// let halftonePass = new THREE.HalftonePass(window.innerWidth, window.innerHeight, params);
-// composer.addPass( renderPass );
-// composer.addPass(halftonePass);
+
+function init(city) {
+	// if (scene.contains(group)) {
+
+	// }
+	group.name = "group" + Date.now();
+	group.matrixAutoUpdate = true;
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
 
 
+	//default is EINDHOVEN
 
-var group = new THREE.Object3D();
-var shadowGroup = new THREE.Object3D();
-group.matrixAutoUpdate = true;
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-//BREDA 76.9,3.0,1.6,1.7,3.1,1.1,1.7,0.1,1.1,2.8,0.8,0.6,1.3,0.4,0.4,0.6,0.6,2.3
-//EINDHOVEN 66.5, 2.7, 1.1, 4.6, 2.7, 1.5, 2.4, 0.2, 2.1, 4.1, 1.4, 0.9, 1.8, 1.6, 1.0, 0.7, 1.9, 2.8
-//HELMOND 74.6,2.4,0.8,2.7,4.3,0.9,2.2,0.1,1.3,5.3,0.7,0.5,1.1,0.1,0.4,0.9,0.5,1.5
+	console.log(city)
 
-//DEN HAAG
-//47.3, 3.4, 0.6, 7.5, 5.9, 2.2, 2.2, 0.3, 2.7, 6.3, 2.0, 1.6, 2.3, 1.5, 0.8, 0.7, 1.5, 11.3
-
-//TILBURG
-//73.8,2.2,1.2,3.7,2.8,0.8,1.5,0.1,1.0,3.8,1.1,0.6,1.9,0.2,0.5,0.4,0.7,3.8,
-
-//BREDA
-//76.9,3.0,1.6,1.7,3.1,1.1,1.7,0.1,1.1,2.8,0.8,0.6,1.3,0.4,0.4,0.6,0.6,2.3
-
-
-//BEN BOSCH
-//80.1,2.6,0.7,1.8,3.2,0.9,1.7,0.1,0.9,2.1,1.0,0.5,0.9,0.2,0.6,0.5,0.5,1.9,
-
-
-//HELMOND
-
-//74.6,2.4,0.8,2.7,4.3,0.9,2.2,0.1,1.3,5.3,0.7,0.5,1.1,0.1,0.4,0.9,0.5,1.5
-
-
-
-
-var array = [73.8,2.2,1.2,3.7,2.8,0.8,1.5,0.1,1.0,3.8,1.1,0.6,1.9,0.2,0.5,0.4,0.7,3.8
-
-
-];
-var colors = [0x000000, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a];
-
-let ambient = new THREE.AmbientLight(0xffffff, 1.0);
-var pointLight = new THREE.PointLight(0xffffff, 90, 300);
-pointLight.position.set(0, 0, 160);
-scene.add(pointLight);
-
-var sphereSize = 1;
-var pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
-// scene.add(pointLightHelper);
-
-let density = 1;
-let volume = array[0];
-let posX = Math.sin((Math.random() * 10) + 1) * Math.PI * Math.PI;
-let posZ = 0;
-let sinFac = 1;
-for (let i = 0; i < array.length; i++) {
-	volume = array[i];
-
-	posX = ((Math.sin(i / 3) * sinFac) * 10.5) - 2;//80   
-	posZ = (Math.sin(i / 1) * sinFac) * 10;//80   
-	createSpheres(posX, posZ, i, volume, colors[i], i);
-
-	sinFac++;
-	
-
-	if (sinFac === 10) {
-		sinFac = 1;
+	if (city === "Tillburg") {
+		array = [73.8, 2.2, 1.2, 3.7, 2.8, 0.8, 1.5, 0.1, 1.0, 3.8, 1.1, 0.6, 1.9, 0.2, 0.5, 0.4, 0.7, 3.8];
 	}
+	if (city === "Breda") {
+		array = [76.9, 3.0, 1.6, 1.7, 3.1, 1.1, 1.7, 0.1, 1.1, 2.8, 0.8, 0.6, 1.3, 0.4, 0.4, 0.6, 0.6, 2.3];
+	}
+	if (city === "DenBosch") {
+		array = [80.1, 2.6, 0.7, 1.8, 3.2, 0.9, 1.7, 0.1, 0.9, 2.1, 1.0, 0.5, 0.9, 0.2, 0.6, 0.5, 0.5, 1.9,];
+	}
+	if (city === "Helmond") {
+		array = [73.8, 2.2, 1.2, 3.7, 2.8, 0.8, 1.5, 0.1, 1.0, 3.8, 1.1, 0.6, 1.9, 0.2, 0.5, 0.4, 0.7, 3.8];
+	}
+	if (city === "Eindhoven") {
+		array = [66.5, 2.7, 1.1, 4.6, 2.7, 1.5, 2.4, 0.2, 2.1, 4.1, 1.4, 0.9, 1.8, 1.6, 1.0, 0.7, 1.9, 2.8];
+	}
+
+
+
+
+	var colors = [0x000000, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a, 0xffe55a];
+
+	let ambient = new THREE.AmbientLight(0xffffff, 1.0);
+	var pointLight = new THREE.PointLight(0xffffff, 90, 300);
+	pointLight.position.set(0, 0, 160);
+	scene.add(pointLight);
+
+	var sphereSize = 1;
+	var pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+	// scene.add(pointLightHelper);
+
+	let density = 1;
+	for (let i = 0; i < array.length; i++) {
+		volume = array[i];
+
+		posX = ((Math.sin(i / 3) * sinFac) * 10.5) - 2;//80   
+		posZ = (Math.sin(i / 1) * sinFac) * 10;//80   
+		createSpheres(posX, posZ, i, volume, colors[i], i);
+
+		sinFac++;
+
+
+		if (sinFac === 10) {
+			sinFac = 1;
+		}
+	}
+	group.rotation.z = 1.1;
+	shadowGroup.rotation.z = 1.1;
+	scene.add(group);
+	scene.add(shadowGroup);
+
+	camera.position.z = 250;
+	camera.rotation.y = 80;
+	controls.update();
 }
-group.rotation.z = 1.1;
-shadowGroup.rotation.z = 1.1;
-scene.add(group);
-scene.add(shadowGroup);
-
-camera.position.z = 250;
-camera.rotation.y = 80;
-controls.update();
-
 function mapTextLabels() {
 	controls.update();
 	for (let i = 0; i < array.length; i++) {
@@ -232,7 +251,7 @@ function createSpheres(x, z, y, volume, color, current) {
 	let allVerticePositions = [];
 
 	for (let i = 0; i < 100; i++) {
-		  allVerticePositions[i] = new THREE.Vector3(
+		allVerticePositions[i] = new THREE.Vector3(
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
 			Math.sin(THREE.MathUtils.randFloatSpread(-2, 10)) * volume,
@@ -240,9 +259,9 @@ function createSpheres(x, z, y, volume, color, current) {
 	}
 
 
-	var test = new THREE.SphereBufferGeometry(2*volume, 160, 110);
+	var test = new THREE.SphereBufferGeometry(2 * volume, 160, 110);
 	var testSmall = new THREE.SphereBufferGeometry(150, 90, 90);
-	var testVol = new THREE.SphereBufferGeometry(2*volume, volume*5.0, volume*5.0);
+	var testVol = new THREE.SphereBufferGeometry(2 * volume, volume * 5.0, volume * 5.0);
 
 
 
@@ -300,7 +319,7 @@ function createSpheres(x, z, y, volume, color, current) {
 			}
 		});
 
-		
+
 		cube = new THREE.Points(test, shaderMaterial);
 		cube.rotation.x = 1.5;
 		cube.geometry.attributes.position.needsUpdate = true;
@@ -334,7 +353,7 @@ function createSpheres(x, z, y, volume, color, current) {
 		cube = new THREE.Points(testVol, testShaderMat);
 	}
 
-console.log(cube.geometry)
+
 	// for(){
 
 	// }
@@ -347,23 +366,23 @@ console.log(cube.geometry)
 	let cubeShadow = new THREE.Mesh(geometryShadow, materialShadow);
 
 	cube.position.z = -50 + z;
-	cube.position.x = x*0.5;
-	cube.position.y = y*3.5;
+	cube.position.x = x * 0.5;
+	cube.position.y = y * 3.5;
 	cubeShadow.position.z = -50 + z;
-	cubeShadow.position.x = x*0.5;
-	cubeShadow.position.y = y*3.5;
+	cubeShadow.position.x = x * 0.5;
+	cubeShadow.position.y = y * 3.5;
 
-if(current === 0){
-	let cubeCopy = new THREE.Points(testSmall, shaderMaterialSmall);
-	cubeCopy.scale.x = 0.80;
-	cubeCopy.scale.y = 0.80;
-	cubeCopy.scale.z = 0.80;
+	if (current === 0) {
+		let cubeCopy = new THREE.Points(testSmall, shaderMaterialSmall);
+		cubeCopy.scale.x = 0.80;
+		cubeCopy.scale.y = 0.80;
+		cubeCopy.scale.z = 0.80;
 
-	cubeCopy.position.x = x;
-	cubeCopy.position.y = y;
-	cubeCopy.position.z = -50 + z;
-	shadowGroup.add(cubeCopy);
-}
+		cubeCopy.position.x = x;
+		cubeCopy.position.y = y;
+		cubeCopy.position.z = -50 + z;
+		shadowGroup.add(cubeCopy);
+	}
 	group.add(cube);
 	// group.add(filling);
 	if (current !== 0) {
@@ -374,9 +393,9 @@ var animate = function () {
 	requestAnimationFrame(animate);
 	shaderMaterial.uniforms['time'].value = .00025 * (Date.now() - start);
 	shaderMaterialSmall.uniforms['time'].value = .00025 * (Date.now() - start);
-	shaderMaterial.uniforms['random'].value = (Math.random() * 10-1) + 1;
-	shaderMaterialSmall.uniforms['random'].value = (Math.random() * 10-1) + 1;
-	
+	shaderMaterial.uniforms['random'].value = (Math.random() * 10 - 1) + 1;
+	shaderMaterialSmall.uniforms['random'].value = (Math.random() * 10 - 1) + 1;
+
 	// console.log(shaderMaterial.uniforms['time'])
 	// group.rotation.y += 0.005;
 	// shadowGroup.rotation.y += 0.005;
@@ -387,4 +406,3 @@ var animate = function () {
 	renderer.render(scene, camera);
 };
 
-animate();
