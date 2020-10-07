@@ -107,7 +107,8 @@ document.body.appendChild(renderer.domElement);
 
 
 
-var array = [73.8,2.2,1.2,3.7,2.8,0.8,1.5,0.1,1.0,3.8,1.1,0.6,1.9,0.2,0.5,0.4,0.7,3.8
+var array = [74.6,2.4,0.8,2.7,4.3,0.9,2.2,0.1,1.3,5.3,0.7,0.5,1.1,0.1,0.4,0.9,0.5,1.5
+
 
 
 ];
@@ -132,7 +133,7 @@ for (let i = 0; i < array.length; i++) {
 
 	posX = ((Math.sin(i / 3) * sinFac) * 10.5) - 2;//80   
 	posZ = (Math.sin(i / 1) * sinFac) * 10;//80   
-	createSpheres(posX, posZ, i, volume, colors[i], i);
+	createSpheres(i, i*20.0, i, volume, colors[i], i);
 
 	sinFac++;
 	
@@ -302,7 +303,7 @@ function createSpheres(x, z, y, volume, color, current) {
 
 		
 		cube = new THREE.Points(test, shaderMaterial);
-		cube.rotation.x = 1.5;
+    cube.rotation.x = 1.5;
 		cube.geometry.attributes.position.needsUpdate = true;
 
 		filling = new THREE.Points(geometry, fillmat);
@@ -331,7 +332,8 @@ function createSpheres(x, z, y, volume, color, current) {
 			}
 		});
 		var material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true, opacity: 0.9 });
-		cube = new THREE.Points(testVol, testShaderMat);
+    cube = new THREE.Points(testVol, testShaderMat);
+    
 	}
 
 console.log(cube.geometry)
@@ -351,7 +353,12 @@ console.log(cube.geometry)
 	cube.position.y = y*3.5;
 	cubeShadow.position.z = -50 + z;
 	cubeShadow.position.x = x*0.5;
-	cubeShadow.position.y = y*3.5;
+  cubeShadow.position.y = y*3.5;
+  
+  if(current === 0){
+  //  cube.position.x = 90;
+  // cube.position.z= 100;
+  }
 
 if(current === 0){
 	let cubeCopy = new THREE.Points(testSmall, shaderMaterialSmall);
@@ -361,13 +368,14 @@ if(current === 0){
 
 	cubeCopy.position.x = x;
 	cubeCopy.position.y = y;
-	cubeCopy.position.z = -50 + z;
+  cubeCopy.position.z = -50 + z;
+  // cubeCopy.position.z= 100;
 	shadowGroup.add(cubeCopy);
 }
 	group.add(cube);
 	// group.add(filling);
 	if (current !== 0) {
-		shadowGroup.add(cubeShadow);
+	//	shadowGroup.add(cubeShadow);
 	}
 }
 var animate = function () {
